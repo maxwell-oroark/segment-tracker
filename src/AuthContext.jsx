@@ -7,7 +7,8 @@ export const AuthDispatchContext = createContext(null);
 export function AuthContextProvider({ children }) {
   const [auth, dispatch] = useReducer((state, action) => action, null);
   useEffect(() => {
-    reviveSession(dispatch);
+    const destroy = reviveSession(dispatch);
+    return () => destroy();
   }, []);
   return (
     <AuthContext.Provider value={auth}>

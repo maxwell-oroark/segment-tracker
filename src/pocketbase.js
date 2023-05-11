@@ -13,5 +13,5 @@ export const reviveSession = (dispatch) => {
     });
     dispatch(user.serialize());
   }, true);
-  return () => destroy();
+  return destroy;
 };
