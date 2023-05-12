@@ -1,22 +1,16 @@
-import { pb } from "./pocketbase";
-import { useAuth, useAuthDispatch } from "./AuthContext";
+import { useAuth } from "./AuthContext";
 import { Layout } from "antd";
 
-import User from "./User";
-import Strava from "./Strava";
+import Profile from "./Profile";
 import Segments from "./Segments";
 
 import "./App.css";
-import Profile from "./Profile";
-
-const { Content, Sider } = Layout;
 
 function App() {
-  const dispatch = useAuthDispatch();
   const user = useAuth();
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sider width={400}>
+      <Layout.Sider width={400}>
         <div
           style={{
             margin: 16,
@@ -26,10 +20,10 @@ function App() {
         >
           <Profile user={user} />
         </div>
-      </Sider>
-      <Content>
+      </Layout.Sider>
+      <Layout.Content>
         <Segments user={user} />
-      </Content>
+      </Layout.Content>
     </Layout>
   );
 }
