@@ -40,7 +40,7 @@ class Strava {
 
   saveTokens(accessToken, refreshToken) {
     if (!accessToken || !refreshToken) {
-      console.warn("do NOT call saveTokens() without token arguments");
+      console.warn("do NOT call saveTokens() without valid token arguments");
     } else {
       const expiration = Date.now() + 5 * 60 * 60 * 1000; // 5 hours
       localStorage.setItem("expires_at", expiration);
@@ -56,12 +56,9 @@ class Strava {
   }
 
   async fetchSegments() {
-    return this.smartFetchfetch(
-      "https://www.strava.com/api/v3/segments/starred",
-      {
-        method: "GET",
-      }
-    );
+    return this.smartFetch("https://www.strava.com/api/v3/segments/starred", {
+      method: "GET",
+    });
   }
 }
 
