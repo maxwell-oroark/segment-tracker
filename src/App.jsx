@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useAuth } from "./AuthContext";
 import { Layout } from "antd";
-import Map from "react-map-gl";
+import Map, { Marker } from "react-map-gl";
 
 import Profile from "./Profile";
 import Segments from "./Segments";
@@ -10,6 +11,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 function App() {
   const user = useAuth();
+  const [activeSegment, setActiveSegment] = useState(null);
   return (
     <Layout
       style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}
@@ -22,8 +24,19 @@ function App() {
           }}
         >
           <Profile user={user} />
+          <div
+            style={{
+              display: "flex",
+              flexGrow: 1,
+              fontSize: 20,
+              justifyContent: "center",
+              fontFamily: "prompt, sans-serif",
+            }}
+          >
+            welcome to segment tracker
+          </div>
         </div>
-        <Segments user={user} />
+        <Segments setActiveSegment={setActiveSegment} user={user} />
       </Layout.Sider>
       <Layout>
         <Layout.Content>
@@ -36,7 +49,15 @@ function App() {
             style={{ width: "100%", height: 500 }}
             mapStyle="mapbox://styles/mapbox/dark-v11"
             mapboxAccessToken="pk.eyJ1IjoibWF4d2VsbG8iLCJhIjoiY2xobWR0cXc3MWFsODNxbzNmZW1ycjl5YyJ9.wi7NOlHfj0CuevTx9FvEyg"
-          />
+          >
+            {activeSegment && (
+              <Marker
+                latitude={activeSegment.start_latlng[0]}
+                longitude={activeSegment.start_latlng[1]}
+                anchor="bottom"
+              ></Marker>
+            )}
+          </Map>
         </Layout.Content>
         <Layout.Footer>Footer content</Layout.Footer>
       </Layout>

@@ -3,7 +3,7 @@ import { Table } from "antd";
 import { StarFilled } from "@ant-design/icons";
 import { pb } from "./pocketbase";
 
-export default function Segments({ user }) {
+export default function Segments({ user, setActiveSegment }) {
   const [segments, setSegments] = useState([]);
   useEffect(() => {
     if (user.data) {
@@ -32,7 +32,8 @@ export default function Segments({ user }) {
             fontSize: "12px",
           }}
         >
-          <StarFilled /> segments
+          <StarFilled /> <span style={{ padding: "0px 5px" }}>segments</span>
+          <StarFilled />
         </div>
       )}
       pagination={{ position: ["bottomCenter"] }}
@@ -41,6 +42,12 @@ export default function Segments({ user }) {
         { title: "Name", dataIndex: "name", ellipsis: true },
         { title: "City", dataIndex: "city" },
       ]}
+      onRow={(record, rowIndex) => {
+        return {
+          onMouseEnter: () => setActiveSegment(record), // mouse enter row
+          onClick: () => setActiveSegment(record),
+        };
+      }}
       dataSource={segments}
     ></Table>
   );
