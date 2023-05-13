@@ -5,7 +5,10 @@ export const AuthContext = createContext(null);
 export const AuthDispatchContext = createContext(null);
 
 export function AuthContextProvider({ children }) {
-  const [auth, dispatch] = useReducer((state, action) => action, null);
+  const [auth, dispatch] = useReducer((state, action) => action, {
+    status: "idle",
+    data: null,
+  });
   useEffect(() => {
     const destroy = reviveSession(dispatch);
     return () => destroy();

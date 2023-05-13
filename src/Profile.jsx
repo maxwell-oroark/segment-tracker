@@ -1,9 +1,13 @@
 import { Avatar, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { signIn, signOut } from "./pocketbase";
+import { useAuthDispatch } from "./AuthContext";
+
+import "./Profile.css";
 
 const Profile = ({ user }) => {
-  if (user) {
+  const dispatch = useAuthDispatch();
+  if (user.data) {
     return (
       <div className="flip-card">
         <div className="flip-card-inner">
@@ -12,7 +16,7 @@ const Profile = ({ user }) => {
               style={{ background: "gray" }}
               shape="square"
               size={64}
-              src={user?.profilePicture}
+              src={user.data?.profilePicture}
             >
               <UserOutlined style={{ fontSize: 64, background: "gray" }} />
             </Avatar>
@@ -21,9 +25,11 @@ const Profile = ({ user }) => {
             <Button
               type="primary"
               style={{ width: 64, height: 64 }}
-              onClick={signOut}
+              onClick={() => signOut(dispatch)}
             >
-              <div style={{ whiteSpace: "normal" }}>Sign Out</div>
+              <div style={{ whiteSpace: "normal", textTransform: "uppercase" }}>
+                log off
+              </div>
             </Button>
           </div>
         </div>
@@ -31,8 +37,14 @@ const Profile = ({ user }) => {
     );
   } else {
     return (
-      <Button type="primary" style={{ width: 64, height: 64 }} onClick={signIn}>
-        <div style={{ whiteSpace: "normal" }}>Sign In</div>
+      <Button
+        type="primary"
+        style={{ width: 64, height: 64 }}
+        onClick={() => signIn(dispatch)}
+      >
+        <div style={{ whiteSpace: "normal", textTransform: "uppercase" }}>
+          log in
+        </div>
       </Button>
     );
   }

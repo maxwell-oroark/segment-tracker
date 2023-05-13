@@ -6,19 +6,22 @@ export const pb = new PocketBase("https://segment-tracker.dev");
 export const reviveSession = (dispatch) => {
   const destroy = pb.authStore.onChange(async (_token, record) => {
     if (record) {
+      console.log("reviving session...");
+      dispatch({ status: "pending", data: null });
       const sc = new Strava();
       const athlete = await sc.fetchAthlete();
       const user = new User({
         athlete,
         record,
       });
-      dispatch(user.serialize());
+      dispatch({ status: "success", data: user.serialize() });
     }
   }, true);
   return destroy;
 };
 
-export async function signIn() {
+export async function signIn(dispatch) {
+  dispatch({ status: "pending", data: null });
   const authData = await pb
     .collection("users")
     .authWithOAuth2({ provider: "strava" });
@@ -30,10 +33,10 @@ export async function signIn() {
     athlete: authData.meta.rawUser,
   });
   await user.sync();
-  dispatch(user.serialize());
+  dispatch({ status: "success", data: user.serialize() });
 }
 
-export async function signOut() {
-  dispatch(null);
+export async function signOut(dispatch) {
+  dispatch({ status: "idle", data: null });
   await pb.authStore.clear();
 }
