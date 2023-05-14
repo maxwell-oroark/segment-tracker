@@ -15,9 +15,7 @@ function App() {
   const [activeSegment, setActiveSegment] = useState(null);
 
   return (
-    <Layout
-      style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}
-    >
+    <Layout style={{ height: "100vh" }}>
       <Layout.Sider theme="light" width={500}>
         <div
           style={{
@@ -34,9 +32,7 @@ function App() {
               justifyContent: "center",
               fontFamily: "prompt, sans-serif",
             }}
-          >
-            welcome to segment tracker
-          </div>
+          ></div>
         </div>
         <Segments
           setHoveredSegment={setHoveredSegment}

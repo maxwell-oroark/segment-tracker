@@ -20,20 +20,20 @@ export const reviveSession = (dispatch) => {
   return destroy;
 };
 
-export async function signIn(dispatch) {
-  dispatch({ status: "pending", data: null });
+export async function signIn() {
   const authData = await pb
     .collection("users")
     .authWithOAuth2({ provider: "strava" });
   // save strava tokens before attempting to syncronize user
   const sc = new Strava(authData.meta.accessToken, authData.meta.refreshToken);
   sc.saveTokens(authData.meta.accessToken, authData.meta.refreshToken);
-  const user = new User({
-    record: authData.record,
-    athlete: authData.meta.rawUser,
-  });
-  await user.sync();
-  dispatch({ status: "success", data: user.serialize() });
+  // const user = new User({
+  //   record: authData.record,
+  //   athlete: authData.meta.rawUser,
+  // });
+  // console.time("segment_sync");
+  // await user.sync();
+  // console.timeEnd("segment_sync");
 }
 
 export async function signOut(dispatch) {

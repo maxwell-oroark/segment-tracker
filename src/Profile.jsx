@@ -23,6 +23,7 @@ const Profile = ({ user }) => {
           </div>
           <div className="flip-card-back">
             <Button
+              danger
               type="primary"
               style={{ width: 64, height: 64 }}
               onClick={() => signOut(dispatch)}

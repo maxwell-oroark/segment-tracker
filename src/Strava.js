@@ -57,9 +57,19 @@ class Strava {
   }
 
   async fetchSegments() {
-    return this.smartFetch("https://www.strava.com/api/v3/segments/starred", {
-      method: "GET",
-    });
+    const PER_PAGE = 100;
+    const segments = [];
+    for (let i = 1; i < 10; i++) {
+      let url = `https://www.strava.com/api/v3/segments/starred?page=${i}&per_page=${PER_PAGE}`;
+      const chunk = await this.smartFetch(url);
+      segments.push(...chunk);
+      if (chunk.length < PER_PAGE) {
+        // we have reached the last page of segments
+        // so we stop querying
+        break;
+      }
+    }
+    return segments;
   }
 }
 

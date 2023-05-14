@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port 3000",
     "build": "vite build",
+    "deploy": "scp -r ./dist/* max@segment-tracker.dev:/home/max/Code/pocketbase/pb_public",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

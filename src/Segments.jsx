@@ -40,7 +40,11 @@ export default function Segments({
           <StarFilled />
         </div>
       )}
-      pagination={{ position: ["bottomCenter"] }}
+      pagination={{
+        position: ["bottomCenter"],
+        pageSize: 10,
+        showSizeChanger: false,
+      }}
       rowKey="id"
       columns={[
         { title: "Name", dataIndex: "name", ellipsis: true },
