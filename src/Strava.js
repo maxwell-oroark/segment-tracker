@@ -11,18 +11,19 @@ class Strava {
       return this.token;
     } else {
       console.log("fetching new token");
-      const response = await fetch("https://www.strava.com/oauth/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          grant_type: "refresh_token",
-          refresh_token: this.refreshToken,
-          client_id: "<client_id>",
-          client_secret: "<client_secret>",
-        }),
-      }).then((res) => res.json());
+      const response = await fetch(
+        "https://us-central1-segment-tracker.cloudfunctions.net/refresh_token_proxy",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refresh_token: this.refreshToken,
+          }),
+        }
+      ).then((res) => res.json());
+      console.log(response);
       this.saveTokens(response.access_token, response.refresh_token);
       return response.access_token;
     }
