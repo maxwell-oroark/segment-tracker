@@ -11,7 +11,9 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 function App() {
   const user = useAuth();
+  const [hoveredSegment, setHoveredSegment] = useState(null);
   const [activeSegment, setActiveSegment] = useState(null);
+
   return (
     <Layout
       style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}
@@ -36,31 +38,43 @@ function App() {
             welcome to segment tracker
           </div>
         </div>
-        <Segments setActiveSegment={setActiveSegment} user={user} />
+        <Segments
+          setHoveredSegment={setHoveredSegment}
+          setActiveSegment={setActiveSegment}
+          user={user}
+        />
       </Layout.Sider>
-      <Layout>
-        <Layout.Content>
+
+      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ height: "50%" }}>
           <Map
             initialViewState={{
               longitude: -100,
               latitude: 40,
               zoom: 3.5,
             }}
-            style={{ width: "100%", height: 500 }}
+            style={{ width: "100%", height: "100%" }}
             mapStyle="mapbox://styles/mapbox/dark-v11"
             mapboxAccessToken="pk.eyJ1IjoibWF4d2VsbG8iLCJhIjoiY2xobWR0cXc3MWFsODNxbzNmZW1ycjl5YyJ9.wi7NOlHfj0CuevTx9FvEyg"
           >
-            {activeSegment && (
+            {hoveredSegment && (
               <Marker
-                latitude={activeSegment.start_latlng[0]}
-                longitude={activeSegment.start_latlng[1]}
+                latitude={hoveredSegment.start_latlng[0]}
+                longitude={hoveredSegment.start_latlng[1]}
                 anchor="bottom"
               ></Marker>
             )}
           </Map>
-        </Layout.Content>
-        <Layout.Footer>Footer content</Layout.Footer>
-      </Layout>
+        </div>
+        <div style={{ height: "50%" }}>
+          {activeSegment && (
+            <>
+              <div>{activeSegment.name}</div>
+              <div>{activeSegment.distance}</div>
+            </>
+          )}
+        </div>
+      </Layout.Content>
     </Layout>
   );
 }

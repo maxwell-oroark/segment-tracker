@@ -3,7 +3,11 @@ import { Table } from "antd";
 import { StarFilled } from "@ant-design/icons";
 import { pb } from "./pocketbase";
 
-export default function Segments({ user, setActiveSegment }) {
+export default function Segments({
+  user,
+  setHoveredSegment,
+  setActiveSegment,
+}) {
   const [segments, setSegments] = useState([]);
   useEffect(() => {
     if (user.data) {
@@ -44,7 +48,7 @@ export default function Segments({ user, setActiveSegment }) {
       ]}
       onRow={(record, rowIndex) => {
         return {
-          onMouseEnter: () => setActiveSegment(record), // mouse enter row
+          onMouseEnter: () => setHoveredSegment(record), // mouse enter row
           onClick: () => setActiveSegment(record),
         };
       }}
