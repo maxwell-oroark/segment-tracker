@@ -27,16 +27,22 @@ export async function signIn() {
   // save strava tokens before attempting to syncronize user
   const sc = new Strava(authData.meta.accessToken, authData.meta.refreshToken);
   sc.saveTokens(authData.meta.accessToken, authData.meta.refreshToken);
-  // const user = new User({
-  //   record: authData.record,
-  //   athlete: authData.meta.rawUser,
-  // });
-  // console.time("segment_sync");
-  // await user.sync();
-  // console.timeEnd("segment_sync");
+  const user = new User({
+    record: authData.record,
+    athlete: authData.meta.rawUser,
+  });
+  console.time("segments/sync");
+  const segments = await sc.fetchSegments();
+  await user.syncSegments(segments);
+  console.timeEnd("segments/sync");
+  return;
 }
 
-export async function signOut(dispatch) {
+export function signOut(dispatch) {
   dispatch({ status: "idle", data: null });
-  await pb.authStore.clear();
+  pb.authStore.clear();
 }
+
+// TODO
+// make app as least dependent on strava api as possible. grab everything you need up front.
+// take out athlete from User model. keep it in store as separate key.

@@ -57,8 +57,26 @@ class Strava {
   }
 
   async fetchSegments() {
+    try {
+      console.log("fetching full segments from strava...");
+      const segments = await this.fetchSegmentsCompact();
+      const segmentsDetail = await Promise.all(
+        segments.map(async (segment) => {
+          const segmentDetail = await this.fetchSegmentDetails(segment.id);
+          return segmentDetail;
+        })
+      );
+      return segmentsDetail;
+    } catch (err) {
+      console.warn("something went wrong while attempting to sync segments");
+      console.error(err);
+    }
+  }
+
+  async fetchSegmentsCompact() {
     const PER_PAGE = 100;
     const segments = [];
+    // fetch maximum 1000 segments for now
     for (let i = 1; i < 10; i++) {
       let url = `https://www.strava.com/api/v3/segments/starred?page=${i}&per_page=${PER_PAGE}`;
       const chunk = await this.smartFetch(url);
@@ -70,6 +88,11 @@ class Strava {
       }
     }
     return segments;
+  }
+
+  async fetchSegmentDetails(segmentId) {
+    const url = `https://www.strava.com/api/v3/segments/${segmentId}`;
+    return this.smartFetch(url);
   }
 }
 

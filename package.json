@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@mapbox/polyline": "^1.2.0",
     "antd": "^5.4.7",
+    "h3-js": "^4.1.0",
     "mapbox-gl": "^2.14.1",
     "pocketbase": "^0.14.4",
     "react": "^18.2.0",

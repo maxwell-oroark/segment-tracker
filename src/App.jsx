@@ -8,6 +8,7 @@ import Segments from "./Segments";
 
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
+import SegmentDetail from "./SegmentDetail";
 
 function App() {
   const user = useAuth();
@@ -63,12 +64,7 @@ function App() {
           </Map>
         </div>
         <div style={{ height: "50%" }}>
-          {activeSegment && (
-            <>
-              <div>{activeSegment.name}</div>
-              <div>{activeSegment.distance}</div>
-            </>
-          )}
+          {activeSegment && <SegmentDetail segment={activeSegment} />}
         </div>
       </Layout.Content>
     </Layout>
