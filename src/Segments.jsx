@@ -24,28 +24,38 @@ export default function Segments({
 
   return (
     <Table
-      bordered
+      size="small"
       title={() => (
         <div
           style={{
             display: "flex",
             color: "white",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
             textTransform: "uppercase",
             fontSize: "12px",
           }}
         >
-          <StarFilled /> <span style={{ padding: "0px 5px" }}>segments</span>
-          <StarFilled />
+          <div>
+            your <StarFilled style={{ padding: "0px 5px" }} />{" "}
+            <span>segments</span>
+          </div>
+          <div>
+            last updated:{" "}
+            {segments.length &&
+              new Date(segments[0].created).toLocaleDateString()}
+          </div>
         </div>
       )}
       pagination={{
         position: ["bottomCenter"],
-        pageSize: 10,
+        pageSize: 15,
         showSizeChanger: false,
       }}
       rowKey="id"
+      rowClassName={(record, index) =>
+        index % 2 === 0 ? "table-row-light" : "table-row-dark"
+      }
       columns={[
         { title: "Name", dataIndex: "name", ellipsis: true },
         { title: "City", dataIndex: "city" },

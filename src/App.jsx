@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "./AuthContext";
 import { Layout } from "antd";
-import Map, { Marker } from "react-map-gl";
-
+import Map, { Marker, Source, Layer } from "react-map-gl";
 import Profile from "./Profile";
 import Segments from "./Segments";
 
@@ -11,9 +10,12 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import SegmentDetail from "./SegmentDetail";
 
 function App() {
+  const map = useRef();
   const user = useAuth();
   const [hoveredSegment, setHoveredSegment] = useState(null);
   const [activeSegment, setActiveSegment] = useState(null);
+
+  console.log(activeSegment);
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -37,14 +39,18 @@ function App() {
         </div>
         <Segments
           setHoveredSegment={setHoveredSegment}
-          setActiveSegment={setActiveSegment}
+          setActiveSegment={(segment) => {
+            map.current.fitBounds(segment.bbox, { padding: 150, duration: 0 });
+            setActiveSegment(segment);
+          }}
           user={user}
         />
       </Layout.Sider>
 
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ height: "50%" }}>
+        <div style={{ height: "500px" }}>
           <Map
+            ref={map}
             initialViewState={{
               longitude: -100,
               latitude: 40,
@@ -61,11 +67,18 @@ function App() {
                 anchor="bottom"
               ></Marker>
             )}
+            {activeSegment && (
+              <Source type="geojson" data={activeSegment.geojson}>
+                <Layer
+                  id={activeSegment.id}
+                  type="line"
+                  paint={{ "line-color": "red", "line-width": 5 }}
+                />
+              </Source>
+            )}
           </Map>
         </div>
-        <div style={{ height: "50%" }}>
-          {activeSegment && <SegmentDetail segment={activeSegment} />}
-        </div>
+        <div>{activeSegment && <SegmentDetail segment={activeSegment} />}</div>
       </Layout.Content>
     </Layout>
   );

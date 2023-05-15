@@ -7,7 +7,14 @@
 }
 
 .ant-table-title {
-    background: #d3d3d3;
+    background: 	#D8D8D8;
     padding: 5px !important;
     border-radius: 0 !important;
+}
+
+.table-row-light {
+    background-color: #ffffff;
+}
+.table-row-dark {
+    background-color: #fbfbfb;
 }

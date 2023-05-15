@@ -7,10 +7,9 @@ class Strava {
 
   async getCurrentToken() {
     if (this.expiredAt > Date.now()) {
-      console.log("not expired - fetching out of local storage");
       return this.token;
     } else {
-      console.log("fetching new token");
+      console.log("refreshing token");
       const response = await fetch(
         "https://us-central1-segment-tracker.cloudfunctions.net/refresh_token_proxy",
         {
@@ -23,7 +22,7 @@ class Strava {
           }),
         }
       ).then((res) => res.json());
-      console.log(response);
+      this.token = response.access_token;
       this.saveTokens(response.access_token, response.refresh_token);
       return response.access_token;
     }
