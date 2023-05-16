@@ -6,7 +6,7 @@ import { StarFilled, SyncOutlined } from "@ant-design/icons";
 import Map, { Source, Layer } from "react-map-gl";
 
 import Strava from "./models/Strava";
-import { syncSegments, fetchSegments } from "./models/User";
+import { syncSegments, fetchSegments } from "./pocketbase";
 
 import Profile from "./Profile";
 import SegmentsTable from "./SegmentsTable";

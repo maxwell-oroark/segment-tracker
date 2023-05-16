@@ -1,5 +1,6 @@
 import PocketBase from "pocketbase";
 import Strava from "./models/Strava";
+import Segment from "./models/Segment";
 
 export const pb = new PocketBase("https://segment-tracker.dev");
 
@@ -36,9 +37,32 @@ export async function signIn(dispatch) {
     ftp: authData.meta.rawUser.ftp,
   };
   await pb.collection("users").update(authData.record.id, stravaDetails);
-  dispatch({ type: "ADD_SESSION", payload: { ...record, ...stravaDetails } });
+  dispatch({
+    type: "ADD_SESSION",
+    payload: { ...authData.record, ...stravaDetails },
+  });
 }
 
 export function signOut() {
   pb.authStore.clear();
+}
+
+export async function syncSegments(newSegments, userId) {
+  console.log(`found ${newSegments.length} new segment(s)`);
+  if (newSegments.length > 0) {
+    const promises = newSegments.map((segment) => {
+      const model = new Segment(segment, userId);
+      return pb
+        .collection("segments")
+        .create(model.serialize(), { $autoCancel: false });
+    });
+    await Promise.all(promises);
+    console.log("segments synced");
+  } else {
+    console.log("no new segments found");
+  }
+}
+
+export async function fetchSegments() {
+  return pb.collection("segments").getFullList({ sort: "-created" });
 }
