@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Table } from "antd";
-import { StarFilled } from "@ant-design/icons";
+import { StarFilled, CloudSyncOutlined } from "@ant-design/icons";
 import { pb } from "./pocketbase";
 
 export default function Segments({
   user,
+  activeSegment,
   setHoveredSegment,
   setActiveSegment,
 }) {
@@ -37,10 +38,11 @@ export default function Segments({
           }}
         >
           <div>
-            your <StarFilled style={{ padding: "0px 5px" }} />{" "}
+            your <StarFilled style={{ margin: "0px 5px" }} />{" "}
             <span>segments</span>
           </div>
           <div>
+            <CloudSyncOutlined style={{ marginRight: 5 }} />
             last updated:{" "}
             {segments.length &&
               new Date(segments[0].created).toLocaleDateString()}
@@ -49,20 +51,25 @@ export default function Segments({
       )}
       pagination={{
         position: ["bottomCenter"],
-        pageSize: 15,
+        pageSize: 14,
         showSizeChanger: false,
       }}
       rowKey="id"
-      rowClassName={(record, index) =>
-        index % 2 === 0 ? "table-row-light" : "table-row-dark"
-      }
+      rowClassName={(record, index) => {
+        if (record.id === activeSegment?.id) {
+          return "table-row-extra-dark";
+        } else if (index % 2 === 0) {
+          return "table-row-light";
+        } else {
+          return "table-row-dark";
+        }
+      }}
       columns={[
         { title: "Name", dataIndex: "name", ellipsis: true },
         { title: "City", dataIndex: "city" },
       ]}
       onRow={(record, rowIndex) => {
         return {
-          onMouseEnter: () => setHoveredSegment(record), // mouse enter row
           onClick: () => setActiveSegment(record),
         };
       }}

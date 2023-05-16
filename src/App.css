@@ -15,6 +15,21 @@
 .table-row-light {
     background-color: #ffffff;
 }
+
 .table-row-dark {
     background-color: #fbfbfb;
+}
+
+.table-row-extra-dark {
+    background-color: #D8D8D8 !important;
+}
+
+table:hover,
+tr:hover,
+thead:hover {
+    background: #D8D8D8 !important;
+}
+
+.ant-table-tbody > tr.ant-table-row:hover > td {
+    background: none !important;
 }

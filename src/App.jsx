@@ -12,10 +12,7 @@ import SegmentDetail from "./SegmentDetail";
 function App() {
   const map = useRef();
   const user = useAuth();
-  const [hoveredSegment, setHoveredSegment] = useState(null);
   const [activeSegment, setActiveSegment] = useState(null);
-
-  console.log(activeSegment);
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -38,11 +35,11 @@ function App() {
           ></div>
         </div>
         <Segments
-          setHoveredSegment={setHoveredSegment}
           setActiveSegment={(segment) => {
             map.current.fitBounds(segment.bbox, { padding: 150, duration: 0 });
             setActiveSegment(segment);
           }}
+          activeSegment={activeSegment}
           user={user}
         />
       </Layout.Sider>
@@ -60,19 +57,16 @@ function App() {
             mapStyle="mapbox://styles/mapbox/dark-v11"
             mapboxAccessToken="pk.eyJ1IjoibWF4d2VsbG8iLCJhIjoiY2xobWR0cXc3MWFsODNxbzNmZW1ycjl5YyJ9.wi7NOlHfj0CuevTx9FvEyg"
           >
-            {hoveredSegment && (
-              <Marker
-                latitude={hoveredSegment.start_latlng[0]}
-                longitude={hoveredSegment.start_latlng[1]}
-                anchor="bottom"
-              ></Marker>
-            )}
             {activeSegment && (
-              <Source type="geojson" data={activeSegment.geojson}>
+              <Source
+                key={activeSegment.id}
+                type="geojson"
+                data={activeSegment.geojson}
+              >
                 <Layer
-                  id={activeSegment.id}
                   type="line"
-                  paint={{ "line-color": "red", "line-width": 5 }}
+                  id={activeSegment.id}
+                  paint={{ "line-color": "#91caff", "line-width": 5 }}
                 />
               </Source>
             )}
