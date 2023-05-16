@@ -1,13 +1,13 @@
 import mapboxgl from "mapbox-gl";
 import polyline from "@mapbox/polyline";
 import { latLngToCell } from "h3-js";
+import { point } from "@turf/helpers";
 
 // 5 = very fuzzy, 6 = fuzzy, 7 very precise 1:1 with rtma pixel resolution
 const SPATIAL_RESOLUTION = 5;
 
 class Segment {
   constructor(segment, userId) {
-    console.log(segment);
     this.segment_id = segment.id;
     this.user_id = userId;
     this.name = segment.name;
@@ -73,6 +73,15 @@ class Segment {
     } catch (err) {
       console.warn("could not derive h3 hex from lat/lng");
       console.error(err);
+      return null;
+    }
+  }
+
+  getCentroid() {
+    if (this.centroid) {
+      return point(this.centroid);
+    } else {
+      console.warn("no centroid exists on this segment");
       return null;
     }
   }

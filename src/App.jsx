@@ -1,9 +1,17 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useStore, useStoreDispatch } from "./store/StoreContext";
 import { Layout, Button } from "antd";
 import { StarFilled, SyncOutlined } from "@ant-design/icons";
+import { featureCollection } from "@turf/helpers";
+import Segment from "./models/Segment";
 
 import Map, { Source, Layer } from "react-map-gl";
+import {
+  lineLayer,
+  clusterLayer,
+  clusterCountLayer,
+  unclusteredPointLayer,
+} from "./layers";
 
 import Strava from "./models/Strava";
 import { syncSegments, fetchSegments } from "./pocketbase";
@@ -19,6 +27,17 @@ function App() {
   const map = useRef();
   const dispatch = useStoreDispatch();
   const { session, segments, sync, active } = useStore();
+
+  const segmentsGeojson = useMemo(() => {
+    if (segments.data) {
+      console.log("recalc geojson feature collection");
+      return featureCollection(
+        segments.data.map((s) => new Segment(s).getCentroid())
+      );
+    } else {
+      return null;
+    }
+  }, [segments.data]);
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -38,10 +57,12 @@ function App() {
               activeSegment={active.data}
               setActiveSegment={(segment) => {
                 dispatch({ type: "UPDATE_ACTIVE_SEGMENT", payload: segment });
-                map.current.fitBounds(segment.bbox, {
-                  padding: 150,
-                  duration: 0,
-                });
+                if (segment && segment.bbox) {
+                  map.current.fitBounds(segment.bbox, {
+                    padding: 150,
+                    duration: 0,
+                  });
+                }
               }}
             />
           </Layout.Content>
@@ -129,7 +150,11 @@ function App() {
                 } else if (sync.status === "failed") {
                   return <WarningOutlined />;
                 } else if (sync.status === "fulfilled") {
-                  return `updated ${sync.data.updatedAt}`;
+                  return `updated ${new Date(
+                    sync.data.updatedAt
+                  ).toLocaleDateString()}`;
+                } else {
+                  return null;
                 }
               })()}
             </div>
@@ -149,17 +174,26 @@ function App() {
             mapStyle="mapbox://styles/mapbox/dark-v11"
             mapboxAccessToken="pk.eyJ1IjoibWF4d2VsbG8iLCJhIjoiY2xobWR0cXc3MWFsODNxbzNmZW1ycjl5YyJ9.wi7NOlHfj0CuevTx9FvEyg"
           >
-            {active.data && (
+            {active.data ? (
               <Source
                 key={active.data.id}
                 type="geojson"
                 data={active.data.geojson}
               >
-                <Layer
-                  type="line"
-                  id={active.data.id}
-                  paint={{ "line-color": "#91caff", "line-width": 5 }}
-                />
+                <Layer id={active.data.id} {...lineLayer} />
+              </Source>
+            ) : (
+              <Source
+                id="segments"
+                type="geojson"
+                data={segmentsGeojson}
+                cluster={true}
+                clusterMaxZoom={14}
+                clusterRadius={50}
+              >
+                <Layer {...clusterLayer} />
+                <Layer {...clusterCountLayer} />
+                <Layer {...unclusteredPointLayer} />
               </Source>
             )}
           </Map>

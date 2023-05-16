@@ -29,7 +29,13 @@ export default function SegmentsTable({
       ]}
       onRow={(record, rowIndex) => {
         return {
-          onClick: () => setActiveSegment(record),
+          onClick: () => {
+            if (record.id === activeSegment?.id) {
+              setActiveSegment(null);
+            } else {
+              setActiveSegment(record);
+            }
+          },
         };
       }}
       dataSource={segments}
