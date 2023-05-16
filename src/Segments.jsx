@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
 import { Table } from "antd";
-import { StarFilled, CloudSyncOutlined } from "@ant-design/icons";
 import { pb } from "./pocketbase";
 
-export default function Segments({
-  user,
-  activeSegment,
-  setHoveredSegment,
-  setActiveSegment,
-}) {
+export default function Segments({ user, activeSegment, setActiveSegment }) {
   const [segments, setSegments] = useState([]);
   useEffect(() => {
     if (user.data) {
@@ -16,7 +10,6 @@ export default function Segments({
       pb.collection("segments")
         .getFullList({ sort: "-created" })
         .then((results) => {
-          console.log("results");
           console.log(results);
           setSegments(results);
         });
@@ -26,29 +19,6 @@ export default function Segments({
   return (
     <Table
       size="small"
-      title={() => (
-        <div
-          style={{
-            display: "flex",
-            color: "white",
-            justifyContent: "space-between",
-            alignItems: "center",
-            textTransform: "uppercase",
-            fontSize: "12px",
-          }}
-        >
-          <div>
-            your <StarFilled style={{ margin: "0px 5px" }} />{" "}
-            <span>segments</span>
-          </div>
-          <div>
-            <CloudSyncOutlined style={{ marginRight: 5 }} />
-            last updated:{" "}
-            {segments.length &&
-              new Date(segments[0].created).toLocaleDateString()}
-          </div>
-        </div>
-      )}
       pagination={{
         position: ["bottomCenter"],
         pageSize: 14,

@@ -2,7 +2,7 @@ import { StarFilled } from "@ant-design/icons";
 import { Col, Row, Statistic } from "antd";
 
 const SegmentDetail = ({ segment }) => (
-  <div style={{ margin: 16 }}>
+  <div style={{ margin: 26 }}>
     <Row gutter={8}>
       <Col span={12}>
         <Statistic title="Name" value={segment.name} />
