@@ -62,8 +62,8 @@ export function StoreContextProvider({ children }) {
           },
         };
       }
-
       default: {
+        console.warn("action type did not match any reducers");
         return state;
       }
     }

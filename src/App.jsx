@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useStore, useStoreDispatch } from "./store/StoreContext";
 import { Layout, Button } from "antd";
 import { StarFilled, SyncOutlined } from "@ant-design/icons";
@@ -37,11 +37,11 @@ function App() {
               segments={segments.data}
               activeSegment={active.data}
               setActiveSegment={(segment) => {
+                dispatch({ type: "UPDATE_ACTIVE_SEGMENT", payload: segment });
                 map.current.fitBounds(segment.bbox, {
                   padding: 150,
                   duration: 0,
                 });
-                dispatch({ type: "UPDATE_ACTIVE_SEGMENT", payload: segment });
               }}
             />
           </Layout.Content>
@@ -99,11 +99,15 @@ function App() {
                       )
                     );
                     await syncSegments(newSegments, session.data.id);
-
                     console.timeEnd("segments/sync");
                     dispatch({
                       type: "UPDATE_SYNC_SEGMENTS",
                       payload: { status: "fulfilled", updatedAt: Date.now() },
+                    });
+                    const refreshedSegments = await fetchSegments();
+                    dispatch({
+                      type: "ADD_SEGMENTS",
+                      payload: refreshedSegments,
                     });
                   } catch (err) {
                     dispatch({
@@ -114,7 +118,8 @@ function App() {
                 }}
                 type="primary"
                 shape="circle"
-                icon={<SyncOutlined />}
+                disabled={sync.status === "pending"}
+                icon={<SyncOutlined spin={sync.status === "pending"} />}
               />
             </div>
             <div style={{ width: "33%", textAlign: "center" }}>
@@ -122,7 +127,7 @@ function App() {
                 if (sync.status === "pending") {
                   return "syncing segments...";
                 } else if (sync.status === "failed") {
-                  return "syncing segments failed";
+                  return <WarningOutlined />;
                 } else if (sync.status === "fulfilled") {
                   return `updated ${sync.data.updatedAt}`;
                 }
