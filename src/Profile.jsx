@@ -5,9 +5,9 @@ import { useStoreDispatch } from "./store/StoreContext";
 
 import "./Profile.css";
 
-const Profile = ({ user }) => {
+const Profile = ({ session }) => {
   const dispatch = useStoreDispatch();
-  if (user.data) {
+  if (session.data) {
     return (
       <div className="flip-card">
         <div className="flip-card-inner">
@@ -16,7 +16,7 @@ const Profile = ({ user }) => {
               style={{ background: "gray" }}
               shape="square"
               size={64}
-              src={user.data?.profilePicture}
+              src={session.data?.profilePicture}
             >
               <UserOutlined style={{ fontSize: 64, background: "gray" }} />
             </Avatar>

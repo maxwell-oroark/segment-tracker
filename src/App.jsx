@@ -50,7 +50,7 @@ function App() {
                 display: "flex",
               }}
             >
-              <Profile user={session} />
+              <Profile session={session} />
             </div>
             <SegmentsTable
               segments={segments.data}
@@ -139,7 +139,7 @@ function App() {
                 }}
                 type="primary"
                 shape="circle"
-                disabled={sync.status === "pending"}
+                disabled={!session.data || sync.status === "pending"}
                 icon={<SyncOutlined spin={sync.status === "pending"} />}
               />
             </div>
