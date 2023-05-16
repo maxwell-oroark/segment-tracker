@@ -1,21 +1,10 @@
-import { useEffect, useState } from "react";
 import { Table } from "antd";
-import { pb } from "./pocketbase";
 
-export default function Segments({ user, activeSegment, setActiveSegment }) {
-  const [segments, setSegments] = useState([]);
-  useEffect(() => {
-    if (user.data) {
-      console.log(`fetching segments for ${user.data.id}`);
-      pb.collection("segments")
-        .getFullList({ sort: "-created" })
-        .then((results) => {
-          console.log(results);
-          setSegments(results);
-        });
-    }
-  }, [user.data?.id]);
-
+export default function SegmentsTable({
+  segments,
+  activeSegment,
+  setActiveSegment,
+}) {
   return (
     <Table
       size="small"

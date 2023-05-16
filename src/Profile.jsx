@@ -1,12 +1,12 @@
 import { Avatar, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { signIn, signOut } from "./pocketbase";
-import { useAuthDispatch } from "./AuthContext";
+import { useStoreDispatch } from "./store/StoreContext";
 
 import "./Profile.css";
 
 const Profile = ({ user }) => {
-  const dispatch = useAuthDispatch();
+  const dispatch = useStoreDispatch();
   if (user.data) {
     return (
       <div className="flip-card">
@@ -26,7 +26,10 @@ const Profile = ({ user }) => {
               danger
               type="primary"
               style={{ width: 64, height: 64 }}
-              onClick={() => signOut(dispatch)}
+              onClick={() => {
+                dispatch({ type: "REMOVE_SESSION" });
+                signOut();
+              }}
             >
               <div style={{ whiteSpace: "normal", textTransform: "uppercase" }}>
                 log off

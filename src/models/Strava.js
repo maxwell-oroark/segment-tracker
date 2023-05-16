@@ -1,12 +1,14 @@
+import Segment from "./Segment";
+
 class Strava {
   constructor() {
     this.token = localStorage.getItem("strava_access_token");
     this.refreshToken = localStorage.getItem("strava_refresh_token");
-    this.expiredAt = localStorage.getItem("expires_at");
+    this.expiresAt = localStorage.getItem("expires_at");
   }
 
   async getCurrentToken() {
-    if (this.expiredAt > Date.now()) {
+    if (this.expiresAt > Date.now()) {
       return this.token;
     } else {
       console.log("refreshing token");
@@ -22,8 +24,10 @@ class Strava {
           }),
         }
       ).then((res) => res.json());
-      this.token = response.access_token;
       this.saveTokens(response.access_token, response.refresh_token);
+      this.token = response.access_token;
+      this.expiresAt = response.expires_at;
+
       return response.access_token;
     }
   }
@@ -58,10 +62,10 @@ class Strava {
   async fetchSegments() {
     try {
       console.log("fetching full segments from strava...");
-      const segments = await this.fetchSegmentsCompact();
+      const segments = await this.fetchSegmentIds();
       const segmentsDetail = await Promise.all(
-        segments.map(async (segment) => {
-          const segmentDetail = await this.fetchSegmentDetails(segment.id);
+        segments.map(async (id) => {
+          const segmentDetail = await this.fetchSegmentDetails(id);
           return segmentDetail;
         })
       );
@@ -72,14 +76,15 @@ class Strava {
     }
   }
 
-  async fetchSegmentsCompact() {
+  async fetchSegmentIds() {
     const PER_PAGE = 100;
     const segments = [];
     // fetch maximum 1000 segments for now
     for (let i = 1; i < 10; i++) {
       let url = `https://www.strava.com/api/v3/segments/starred?page=${i}&per_page=${PER_PAGE}`;
       const chunk = await this.smartFetch(url);
-      segments.push(...chunk);
+      const ids = chunk.map((s) => s.id);
+      segments.push(...ids);
       if (chunk.length < PER_PAGE) {
         // we have reached the last page of segments
         // so we stop querying
@@ -91,7 +96,8 @@ class Strava {
 
   async fetchSegmentDetails(segmentId) {
     const url = `https://www.strava.com/api/v3/segments/${segmentId}`;
-    return this.smartFetch(url);
+    const stravaRecord = await this.smartFetch(url);
+    return stravaRecord;
   }
 }
 

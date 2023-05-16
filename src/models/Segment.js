@@ -7,6 +7,7 @@ const SPATIAL_RESOLUTION = 5;
 
 class Segment {
   constructor(segment, userId) {
+    console.log(segment);
     this.segment_id = segment.id;
     this.user_id = userId;
     this.name = segment.name;
@@ -19,10 +20,11 @@ class Segment {
     this.country = segment.country;
     this.effort_count = segment.effort_count;
     this.athlete_count = segment.athlete_count;
-    this.attempts = segment.athlete_segment_stats.effort_count;
-    this.pr = segment.athlete_segment_stats.pr_elapsed_time;
-    this.pr_date = segment.athlete_segment_stats.pr_date;
-    this.polyline = segment.map.polyline;
+    this.attempts =
+      segment.attempts || segment?.athlete_segment_stats?.effort_count;
+    this.pr = segment.pr || segment?.athlete_segment_stats?.pr_elapsed_time;
+    this.pr_date = segment.pr_date || segment?.athlete_segment_stats?.pr_date;
+    this.polyline = segment.polyline || segment.map.polyline;
     this.geojson = segment.geojson || null;
     this.centroid = segment.centroid || null;
     this.bbox = segment.bbox || null;
