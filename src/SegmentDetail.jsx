@@ -1,5 +1,5 @@
 import { StarFilled } from "@ant-design/icons";
-import { Col, Row, Statistic } from "antd";
+import { Col, Row, Divider, Statistic } from "antd";
 
 const SegmentDetail = ({ segment }) => (
   <div style={{ display: "flex" }}>
@@ -46,6 +46,14 @@ const SegmentDetail = ({ segment }) => (
     </div>
     <div
       style={{
+        alignSelf: "stretch",
+        margin: "15px 0px",
+        width: "1px",
+        background: "#d3d3d3",
+      }}
+    />
+    <div
+      style={{
         margin: 20,
         alignSelf: "stretch",
         flexGrow: 1,
@@ -65,6 +73,18 @@ const SegmentDetail = ({ segment }) => (
             value={Math.floor(Math.random() * 360)}
             suffix={"°"}
           />
+        </Col>
+      </Row>
+      <Row gutter={8}>
+        <Col span={12}>
+          <Statistic
+            title="Bearing"
+            value={segment.bearing.toFixed(2)}
+            suffix={"°"}
+          />
+        </Col>
+        <Col span={12}>
+          <Statistic title="H3" value={segment.h3} />
         </Col>
       </Row>
     </div>

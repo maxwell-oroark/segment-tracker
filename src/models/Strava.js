@@ -5,6 +5,7 @@ class Strava {
     this.token = localStorage.getItem("strava_access_token");
     this.refreshToken = localStorage.getItem("strava_refresh_token");
     this.expiresAt = localStorage.getItem("expires_at");
+    // this.getCurrentToken.bind(this);
   }
 
   async getCurrentToken() {

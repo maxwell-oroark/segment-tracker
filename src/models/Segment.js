@@ -2,6 +2,7 @@ import mapboxgl from "mapbox-gl";
 import polyline from "@mapbox/polyline";
 import { latLngToCell } from "h3-js";
 import { point } from "@turf/helpers";
+import bearing from "@turf/bearing";
 
 // 5 = very fuzzy, 6 = fuzzy, 7 very precise 1:1 with rtma pixel resolution
 const SPATIAL_RESOLUTION = 5;
@@ -11,6 +12,8 @@ class Segment {
     this.segment_id = segment.id;
     this.user_id = userId;
     this.name = segment.name;
+    this.bearing = segment.bearing;
+    this.activity_type = segment.activity_type;
     this.start_latlng = segment.start_latlng;
     this.end_latlng = segment.end_latlng;
     this.star_count = segment.star_count;
@@ -32,12 +35,28 @@ class Segment {
   }
 
   computeBbox(start, end) {
+    // need to flip coordinates for mapbox/turfJS methods
     const [lat1, lng1] = start;
     const [lat2, lng2] = end;
     try {
       return new mapboxgl.LngLatBounds([lng1, lat1], [lng2, lat2]).toArray();
     } catch (err) {
       console.warn("could not calculate bbox for segment");
+      console.error(err);
+      return null;
+    }
+  }
+
+  computeBearing(start, end) {
+    // need to flip coordinates for mapbox/turfJS methods
+    const [lat1, lng1] = start;
+    const [lat2, lng2] = end;
+    try {
+      const pointA = point([lng1, lat1]);
+      const pointB = point([lng2, lat2]);
+      return bearing(pointA, pointB);
+    } catch (err) {
+      console.warn("could not calculate bearing for segment");
       console.error(err);
       return null;
     }
@@ -95,6 +114,7 @@ class Segment {
       end_latlng: this.end_latlng,
       star_count: this.star_count,
       distance: this.distance,
+      activity_type: this.activity_type,
       city: this.city,
       state: this.state,
       country: this.country,
@@ -108,6 +128,9 @@ class Segment {
     };
     if (this.start_latlng && this.end_latlng && !this.bbox) {
       obj["bbox"] = this.computeBbox(this.start_latlng, this.end_latlng);
+    }
+    if (this.start_latlng && this.end_latlng && !this.bearing) {
+      obj["bearing"] = this.computeBearing(this.start_latlng, this.end_latlng);
     }
     if (this.polyline && !this.geojson) {
       obj["geojson"] = this.computeGeojson(this.polyline);

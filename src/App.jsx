@@ -1,7 +1,7 @@
 import { useRef, useMemo } from "react";
 import { useStore, useStoreDispatch } from "./store/StoreContext";
 import { Layout, Button } from "antd";
-import { StarFilled, SyncOutlined } from "@ant-design/icons";
+import { StarFilled, SyncOutlined, WarningOutlined } from "@ant-design/icons";
 import { featureCollection } from "@turf/helpers";
 import Segment from "./models/Segment";
 
@@ -39,9 +39,11 @@ function App() {
     }
   }, [segments.data]);
 
+  console.log(active.data);
+
   return (
     <Layout style={{ height: "100vh" }}>
-      <Layout.Sider theme="light" width={500}>
+      <Layout.Sider theme="light" width={400}>
         <Layout>
           <Layout.Content style={{ backgroundColor: "#D8D8D8" }}>
             <div
@@ -72,23 +74,20 @@ function App() {
               left: 0,
               bottom: 0,
               display: "flex",
-              width: 500,
+              width: 400,
               backgroundColor: "#D8D8D8",
               color: "white",
-              justifyContent: "space-between",
+              justifyContent: "center",
               alignItems: "center",
               textTransform: "uppercase",
               padding: "20px 16px",
               fontSize: "12px",
             }}
           >
-            <div style={{ width: "33%", textAlign: "center" }}>
-              <StarFilled /> <span>segments</span>
-            </div>
             <div
               style={{
-                width: "33%",
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
               }}
             >
@@ -102,10 +101,7 @@ function App() {
                     console.log("syncing segments");
                     const sc = new Strava();
                     console.time("segments/sync");
-                    const userSegmentIds = await fetchSegments().then((res) =>
-                      // TODO segment_id should be number in db
-                      res.map((s) => Number(s.segment_id))
-                    );
+                    const userSegmentIds = await fetchSegments();
                     const stravaSegmentIds = await sc.fetchSegmentIds();
                     const newStravaSegmentIds = stravaSegmentIds.filter(
                       (o) => userSegmentIds.indexOf(o) === -1
@@ -142,21 +138,21 @@ function App() {
                 disabled={!session.data || sync.status === "pending"}
                 icon={<SyncOutlined spin={sync.status === "pending"} />}
               />
-            </div>
-            <div style={{ width: "33%", textAlign: "center" }}>
-              {(() => {
-                if (sync.status === "pending") {
-                  return "syncing segments...";
-                } else if (sync.status === "failed") {
-                  return <WarningOutlined />;
-                } else if (sync.status === "fulfilled") {
-                  return `updated ${new Date(
-                    sync.data.updatedAt
-                  ).toLocaleDateString()}`;
-                } else {
-                  return null;
-                }
-              })()}
+              <div>
+                {(() => {
+                  if (sync.status === "pending") {
+                    return "syncing segments...";
+                  } else if (sync.status === "failed") {
+                    return <WarningOutlined />;
+                  } else if (sync.status === "fulfilled") {
+                    return `updated ${new Date(
+                      sync.data.updatedAt
+                    ).toLocaleDateString()}`;
+                  } else {
+                    return null;
+                  }
+                })()}
+              </div>
             </div>
           </Layout.Footer>
         </Layout>
