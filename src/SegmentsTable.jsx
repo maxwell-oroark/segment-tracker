@@ -24,7 +24,7 @@ export default function SegmentsTable({
         }
       }}
       columns={[
-        { title: "Name", dataIndex: "name", ellipsis: true },
+        { title: "Segment", dataIndex: "name", ellipsis: true },
         { title: "City", dataIndex: "city" },
       ]}
       onRow={(record, rowIndex) => {
