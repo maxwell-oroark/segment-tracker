@@ -1,17 +1,10 @@
 import { useRef, useMemo } from "react";
 import { useStore, useStoreDispatch } from "./store/StoreContext";
 import { Layout, Button } from "antd";
-import { StarFilled, SyncOutlined, WarningOutlined } from "@ant-design/icons";
+import { SyncOutlined, WarningOutlined } from "@ant-design/icons";
 import { featureCollection } from "@turf/helpers";
 import Segment from "./models/Segment";
-
-import Map, { Source, Layer } from "react-map-gl";
-import {
-  lineLayer,
-  clusterLayer,
-  clusterCountLayer,
-  unclusteredPointLayer,
-} from "./layers";
+import Loading from "./Loading";
 
 import Strava from "./models/Strava";
 import { syncSegments, fetchSegments } from "./pocketbase";
@@ -22,9 +15,9 @@ import SegmentDetail from "./SegmentDetail";
 
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
+import LazyLoad from "./LazyLoad";
 
 function App() {
-  const map = useRef();
   const dispatch = useStoreDispatch();
   const { session, segments, sync, active } = useStore();
 
@@ -44,42 +37,12 @@ function App() {
   return (
     <Layout style={{ height: "100vh" }}>
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ height: "450px" }}>
-          <Map
-            ref={map}
-            initialViewState={{
-              longitude: -100,
-              latitude: 40,
-              zoom: 3.5,
-            }}
-            style={{ width: "100%", height: "450px" }}
-            mapStyle="mapbox://styles/mapbox/dark-v11"
-            mapboxAccessToken="pk.eyJ1IjoibWF4d2VsbG8iLCJhIjoiY2xobWR0cXc3MWFsODNxbzNmZW1ycjl5YyJ9.wi7NOlHfj0CuevTx9FvEyg"
-          >
-            {active.data ? (
-              <Source
-                key={active.data.id}
-                type="geojson"
-                data={active.data.geojson}
-              >
-                <Layer id={active.data.id} {...lineLayer} />
-              </Source>
-            ) : (
-              <Source
-                id="segments"
-                type="geojson"
-                data={segmentsGeojson}
-                cluster={true}
-                clusterMaxZoom={14}
-                clusterRadius={50}
-              >
-                <Layer {...clusterLayer} />
-                <Layer {...clusterCountLayer} />
-                <Layer {...unclusteredPointLayer} />
-              </Source>
-            )}
-          </Map>
-        </div>
+        <LazyLoad
+          load={() => import("./Map")}
+          fallback={Loading}
+          segmentsGeojson={segmentsGeojson}
+          active={active}
+        />
         <div>{active.data && <SegmentDetail segment={active.data} />}</div>
       </Layout.Content>
       <Layout.Sider theme="light" width={400}>
