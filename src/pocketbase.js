@@ -8,6 +8,9 @@ export const reviveSession = (dispatch) => {
   const destroy = pb.authStore.onChange(async (_token, record) => {
     if (record) {
       console.log("...adding session...");
+      const sc = new Strava();
+      // freshen up strava token on startup
+      await sc.getCurrentToken();
       dispatch({ type: "ADD_SESSION", payload: record });
       const segments = await pb
         .collection("segments")
