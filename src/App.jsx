@@ -43,6 +43,45 @@ function App() {
 
   return (
     <Layout style={{ height: "100vh" }}>
+      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ height: "450px" }}>
+          <Map
+            ref={map}
+            initialViewState={{
+              longitude: -100,
+              latitude: 40,
+              zoom: 3.5,
+            }}
+            style={{ width: "100%", height: "450px" }}
+            mapStyle="mapbox://styles/mapbox/dark-v11"
+            mapboxAccessToken="pk.eyJ1IjoibWF4d2VsbG8iLCJhIjoiY2xobWR0cXc3MWFsODNxbzNmZW1ycjl5YyJ9.wi7NOlHfj0CuevTx9FvEyg"
+          >
+            {active.data ? (
+              <Source
+                key={active.data.id}
+                type="geojson"
+                data={active.data.geojson}
+              >
+                <Layer id={active.data.id} {...lineLayer} />
+              </Source>
+            ) : (
+              <Source
+                id="segments"
+                type="geojson"
+                data={segmentsGeojson}
+                cluster={true}
+                clusterMaxZoom={14}
+                clusterRadius={50}
+              >
+                <Layer {...clusterLayer} />
+                <Layer {...clusterCountLayer} />
+                <Layer {...unclusteredPointLayer} />
+              </Source>
+            )}
+          </Map>
+        </div>
+        <div>{active.data && <SegmentDetail segment={active.data} />}</div>
+      </Layout.Content>
       <Layout.Sider theme="light" width={400}>
         <Layout>
           <Layout.Content style={{ backgroundColor: "#D8D8D8" }}>
@@ -50,6 +89,7 @@ function App() {
               style={{
                 margin: 16,
                 display: "flex",
+                justifyContent: "flex-end",
               }}
             >
               <Profile session={session} />
@@ -71,7 +111,7 @@ function App() {
           <Layout.Footer
             style={{
               position: "fixed",
-              left: 0,
+              right: 0,
               bottom: 0,
               display: "flex",
               width: 400,
@@ -157,45 +197,6 @@ function App() {
           </Layout.Footer>
         </Layout>
       </Layout.Sider>
-      <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ height: "450px" }}>
-          <Map
-            ref={map}
-            initialViewState={{
-              longitude: -100,
-              latitude: 40,
-              zoom: 3.5,
-            }}
-            style={{ width: "100%", height: "450px" }}
-            mapStyle="mapbox://styles/mapbox/dark-v11"
-            mapboxAccessToken="pk.eyJ1IjoibWF4d2VsbG8iLCJhIjoiY2xobWR0cXc3MWFsODNxbzNmZW1ycjl5YyJ9.wi7NOlHfj0CuevTx9FvEyg"
-          >
-            {active.data ? (
-              <Source
-                key={active.data.id}
-                type="geojson"
-                data={active.data.geojson}
-              >
-                <Layer id={active.data.id} {...lineLayer} />
-              </Source>
-            ) : (
-              <Source
-                id="segments"
-                type="geojson"
-                data={segmentsGeojson}
-                cluster={true}
-                clusterMaxZoom={14}
-                clusterRadius={50}
-              >
-                <Layer {...clusterLayer} />
-                <Layer {...clusterCountLayer} />
-                <Layer {...unclusteredPointLayer} />
-              </Source>
-            )}
-          </Map>
-        </div>
-        <div>{active.data && <SegmentDetail segment={active.data} />}</div>
-      </Layout.Content>
     </Layout>
   );
 }
