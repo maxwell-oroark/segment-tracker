@@ -2,4 +2,4 @@
 | ----------- | --------------------------- |
 | Production  | https://segment-tracker.dev |
 
-![alt text](https://imgur.com/37QpczS)
+[Imgur](https://imgur.com/aFntVHa)
