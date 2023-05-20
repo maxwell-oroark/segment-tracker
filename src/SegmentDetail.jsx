@@ -1,5 +1,5 @@
 import { StarFilled } from "@ant-design/icons";
-import { Col, Row, Divider, Statistic } from "antd";
+import { Col, Row, Statistic } from "antd";
 
 const SegmentDetail = ({ segment }) => (
   <div style={{ display: "flex" }}>
@@ -84,7 +84,7 @@ const SegmentDetail = ({ segment }) => (
           />
         </Col>
         <Col span={12}>
-          <Statistic title="H3" value={segment.h3} />
+          <Statistic title="H3 Hex" value={segment.hex} />
         </Col>
       </Row>
     </div>

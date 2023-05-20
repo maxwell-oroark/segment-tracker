@@ -31,7 +31,7 @@ class Segment {
     this.geojson = segment.geojson || null;
     this.centroid = segment.centroid || null;
     this.bbox = segment.bbox || null;
-    this.h3 = segment.h3 || null;
+    this.hex = segment.hex || null;
   }
 
   computeBbox(start, end) {
@@ -98,7 +98,7 @@ class Segment {
 
   getCentroid() {
     if (this.centroid) {
-      return point(this.centroid);
+      return point(this.centroid, this.serialize());
     } else {
       console.warn("no centroid exists on this segment");
       return null;
@@ -126,24 +126,15 @@ class Segment {
       polyline: this.polyline,
       centroid: this.centroid,
     };
-    if (this.start_latlng && this.end_latlng && !this.bbox) {
-      obj["bbox"] = this.computeBbox(this.start_latlng, this.end_latlng);
-    }
-    if (this.start_latlng && this.end_latlng && !this.bearing) {
-      obj["bearing"] = this.computeBearing(this.start_latlng, this.end_latlng);
-    }
-    if (this.polyline && !this.geojson) {
-      obj["geojson"] = this.computeGeojson(this.polyline);
-    }
-    if (this.start_latlng && this.end_latlng && !this.centroid) {
-      obj["centroid"] = this.computeCentroid(
-        this.start_latlng,
-        this.end_latlng
-      );
-    }
-    if (obj.centroid && !this.h3) {
-      obj["h3"] = this.computeH3(obj.centroid);
-    }
+
+    obj["bbox"] =
+      this.bbox || this.computeBbox(this.start_latlng, this.end_latlng);
+    obj["bearing"] =
+      this.bearing || this.computeBearing(this.start_latlng, this.end_latlng);
+    obj["geojson"] = this.geojson || this.computeGeojson(this.polyline);
+    obj["centroid"] =
+      this.centroid || this.computeCentroid(this.start_latlng, this.end_latlng);
+    obj["hex"] = this.hex || this.computeH3(obj.centroid);
 
     return obj;
   }
