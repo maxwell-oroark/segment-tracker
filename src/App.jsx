@@ -1,9 +1,7 @@
-import { useRef, useMemo } from "react";
 import { useStore, useStoreDispatch } from "./store/StoreContext";
 import { Layout, Button } from "antd";
 import { SyncOutlined, WarningOutlined } from "@ant-design/icons";
-import { featureCollection } from "@turf/helpers";
-import Segment from "./models/Segment";
+
 import Loading from "./Loading";
 
 import Strava from "./models/Strava";
@@ -21,26 +19,13 @@ function App() {
   const dispatch = useStoreDispatch();
   const { session, segments, sync, active, map } = useStore();
 
-  const segmentsGeojson = useMemo(() => {
-    if (segments.data) {
-      console.log("recalc geojson feature collection");
-      return featureCollection(
-        segments.data.map((s) => new Segment(s).getCentroid())
-      );
-    } else {
-      return null;
-    }
-  }, [segments.data]);
-
-  console.log(active.data);
-
   return (
     <Layout style={{ height: "100vh" }}>
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <LazyLoad
           load={() => import("./Map")}
           fallback={Loading}
-          segmentsGeojson={segmentsGeojson}
+          segments={segments}
           active={active}
         />
         <div>{active.data && <SegmentDetail segment={active.data} />}</div>

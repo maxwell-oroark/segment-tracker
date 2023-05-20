@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Map, { Source, Layer, Popup } from "react-map-gl";
 import {
   lineLayer,
@@ -6,13 +6,26 @@ import {
   clusterCountLayer,
   unclusteredPointLayer,
 } from "./layers";
+import { featureCollection } from "@turf/helpers";
+import Segment from "./models/Segment";
 import { useStoreDispatch } from "./store/StoreContext";
 
-function MapComponent({ active, segmentsGeojson }) {
+function MapComponent({ active, segments }) {
   const map = React.useRef();
   const dispatch = useStoreDispatch();
 
-  const [activeFeature, setActiveFeature] = useState(null);
+  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [activeFeature, setActiveFeature] = useState(active.data);
+  const segmentsGeojson = useMemo(() => {
+    if (segments.data) {
+      console.log("recalc geojson feature collection");
+      return featureCollection(
+        segments.data.map((s) => new Segment(s).getCentroid())
+      );
+    } else {
+      return null;
+    }
+  }, [segments.data]);
 
   useEffect(() => {
     if (map) {
@@ -36,13 +49,25 @@ function MapComponent({ active, segmentsGeojson }) {
         interactiveLayerIds={["unclustered-point"]}
         onMouseMove={(event) => {
           if (event && event.features && event.features[0]) {
-            setActiveFeature({
+            setHoveredFeature({
               longitude: event.lngLat.lng,
               latitude: event.lngLat.lat,
               ...event.features[0],
             });
           } else {
-            setActiveFeature(null);
+            setHoveredFeature(null);
+          }
+        }}
+        onClick={(event) => {
+          if (event && event.features && event.features[0]) {
+            console.log(segments.data);
+            console.log(event.features[0]);
+            const segment = segments.data.find(
+              (s) => s.segment_id === event.features[0].properties.segment_id
+            );
+            console.log("seg");
+            console.log(segment);
+            dispatch({ type: "UPDATE_ACTIVE_SEGMENT", payload: segment });
           }
         }}
       >
@@ -68,13 +93,13 @@ function MapComponent({ active, segmentsGeojson }) {
             <Layer {...unclusteredPointLayer} />
           </Source>
         )}
-        {activeFeature && (
+        {hoveredFeature && (
           <Popup
-            latitude={activeFeature.latitude}
-            longitude={activeFeature.longitude}
-            onClose={() => setActiveFeature(null)}
+            latitude={hoveredFeature.latitude}
+            longitude={hoveredFeature.longitude}
+            onClose={() => setHoveredFeature(null)}
           >
-            {activeFeature.properties.name}
+            {hoveredFeature.properties.name}
           </Popup>
         )}
       </Map>
