@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Map, { Source, Layer } from "react-map-gl";
 import {
   lineLayer,
@@ -6,9 +6,18 @@ import {
   clusterCountLayer,
   unclusteredPointLayer,
 } from "./layers";
+import { useStoreDispatch } from "./store/StoreContext";
 
 function MapComponent({ active, segmentsGeojson }) {
   const map = React.useRef();
+  const dispatch = useStoreDispatch();
+
+  useEffect(() => {
+    if (map) {
+      console.log("setting map ref...");
+      dispatch({ type: "SET_MAP_REF", payload: map });
+    }
+  }, [map]);
 
   return (
     <div style={{ height: "450px" }}>

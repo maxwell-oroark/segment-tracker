@@ -19,7 +19,7 @@ import LazyLoad from "./LazyLoad";
 
 function App() {
   const dispatch = useStoreDispatch();
-  const { session, segments, sync, active } = useStore();
+  const { session, segments, sync, active, map } = useStore();
 
   const segmentsGeojson = useMemo(() => {
     if (segments.data) {

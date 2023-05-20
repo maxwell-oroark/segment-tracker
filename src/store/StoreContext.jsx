@@ -20,6 +20,7 @@ const initialState = {
   active: {
     data: null,
   },
+  map: null,
 };
 export function StoreContextProvider({ children }) {
   const [store, dispatch] = useReducer((state, action) => {
@@ -62,6 +63,11 @@ export function StoreContextProvider({ children }) {
           },
         };
       }
+      case "SET_MAP_REF":
+        return {
+          ...state,
+          map: action.payload,
+        };
       default: {
         console.warn("action type did not match any reducers");
         return state;
