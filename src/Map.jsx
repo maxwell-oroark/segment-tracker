@@ -60,13 +60,9 @@ function MapComponent({ active, segments }) {
         }}
         onClick={(event) => {
           if (event && event.features && event.features[0]) {
-            console.log(segments.data);
-            console.log(event.features[0]);
             const segment = segments.data.find(
               (s) => s.segment_id === event.features[0].properties.segment_id
             );
-            console.log("seg");
-            console.log(segment);
             dispatch({ type: "UPDATE_ACTIVE_SEGMENT", payload: segment });
           }
         }}
