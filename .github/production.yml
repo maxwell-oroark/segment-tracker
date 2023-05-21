@@ -1,0 +1,10 @@
+name: production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_client:
+    uses: ./.github/workflows/deploy_client.yml
