@@ -19,9 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to raspberry pi
-        uses: garygrossgarten/github-action-ssh@release
+        uses: appleboy/scp-action@v0.1.4
         with:
-          command: scp -r ./dist/* max@segment-tracker.dev:/home/max/Code/pocketbase/pb_public
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
+          source: "dist/assets/*.css,dist/assets/*.js,index.html,vite.svg"
+          target: /home/max/Code/pocketbase/pb_public
