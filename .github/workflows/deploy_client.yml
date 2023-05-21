@@ -17,6 +17,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: main
     steps:
       - name: Deploy to raspberry pi
         uses: appleboy/scp-action@v0.1.4
