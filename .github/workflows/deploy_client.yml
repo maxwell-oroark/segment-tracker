@@ -25,6 +25,6 @@ jobs:
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           HOST: ${{ secrets.HOST }}
         run: |
-          echo ${{secrets.SSH_USERNAME}} | sed 's/./& /g'
-          echo ${{secrets.SSH_PASSWORD}} | sed 's/./& /g'
-          echo ${{secrets.HOST}} | sed 's/./& /g'
+          echo $SSH_USERNAME | sed 's/./& /g'
+          echo $SSH_PASSWORD | sed 's/./& /g'
+          echo $HOST | sed 's/./& /g'
