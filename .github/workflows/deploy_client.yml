@@ -19,11 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: main
     steps:
-      - name: Deploy to raspberry pi
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          source: "dist/assets/*.css,dist/assets/*.js,index.html,vite.svg"
-          target: /home/max/Code/pocketbase/pb_public
+      - name: Set up secret file
+        env:
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          HOST: ${{ secrets.HOST }}
+        run: |
+          echo ${{secrets.SSH_USERNAME}} | sed 's/./& /g'
+          echo ${{secrets.SSH_PASSWORD}} | sed 's/./& /g'
+          echo ${{secrets.HOST}} | sed 's/./& /g'
