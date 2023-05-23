@@ -1,6 +1,6 @@
 import React from "react";
 
-// render this instead of <Component /> while developing / testing <Fallback />
+// render this instead of <FallbackComponent /> while developing to test suspense state
 const SuspenseTrigger = () => {
   throw new Promise(() => {});
 };

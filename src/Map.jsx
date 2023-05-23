@@ -8,14 +8,14 @@ import {
 } from "./layers";
 import { featureCollection } from "@turf/helpers";
 import Segment from "./models/Segment";
-import { useStoreDispatch } from "./store/StoreContext";
+import { useStore, useStoreDispatch } from "./store/StoreContext";
 
-function MapComponent({ active, segments }) {
+function MapComponent() {
   const map = React.useRef();
+  const { segments, active } = useStore();
   const dispatch = useStoreDispatch();
 
   const [hoveredFeature, setHoveredFeature] = useState(null);
-  const [activeFeature, setActiveFeature] = useState(active.data);
   const segmentsGeojson = useMemo(() => {
     if (segments.data) {
       console.log("recalc geojson feature collection");
