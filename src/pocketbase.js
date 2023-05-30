@@ -55,6 +55,8 @@ export async function syncSegments(newSegments, userId) {
   if (newSegments.length > 0) {
     const promises = newSegments.map((segment) => {
       const model = new Segment(segment, userId);
+      console.log("segment: ");
+      console.log(model.serialize());
       return pb
         .collection("segments")
         .create(model.serialize(), { $autoCancel: false });

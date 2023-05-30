@@ -9,7 +9,6 @@ const SPATIAL_RESOLUTION = 5;
 
 class Segment {
   constructor(segment, userId) {
-    this.id = segment.id;
     this.segment_id = segment.segment_id;
     this.user_id = userId;
     this.name = segment.name;
@@ -108,7 +107,6 @@ class Segment {
 
   serialize() {
     const obj = {
-      id: this.id,
       segment_id: this.segment_id,
       user_id: this.user_id,
       name: this.name,

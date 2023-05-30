@@ -15,7 +15,7 @@ function App() {
     <Layout style={{ height: "100vh", display: "flex", flexDirection: "row" }}>
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>
         <LazyLoad load={() => import("./Map")} fallback={Loading} />
-        <div>{active.data && <SegmentDetail segment={active.data} />}</div>
+        <SegmentDetail segment={active.data} />
       </Layout.Content>
       <LazyLoad load={() => import("./Sidebar")} fallback={SidebarFallback} />
     </Layout>

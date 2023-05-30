@@ -4,7 +4,8 @@ export default function Loading() {
   return (
     <div
       style={{
-        height: "450px",
+        height: 450,
+        width: "100%",
         backgroundColor: "rgb(0 0 0 / .3)",
         display: "flex",
         justifyContent: "center",

@@ -35,7 +35,7 @@ function MapComponent() {
   }, [map]);
 
   return (
-    <div style={{ height: "450px" }}>
+    <div style={{ height: "450px", width: "100%" }}>
       <Map
         ref={map}
         initialViewState={{

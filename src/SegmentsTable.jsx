@@ -8,6 +8,9 @@ export default function SegmentsTable({
   return (
     <Table
       size="small"
+      locale={{
+        emptyText: "No segments synced",
+      }}
       pagination={{
         position: ["bottomCenter"],
         pageSize: 14,
