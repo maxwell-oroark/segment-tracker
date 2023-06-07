@@ -7,19 +7,25 @@ export const pb = new PocketBase("https://segment-tracker.dev");
 export const reviveSession = (dispatch) => {
   const destroy = pb.authStore.onChange(async (_token, record) => {
     if (record) {
-      console.log("...adding session...");
-      const sc = new Strava();
-      // freshen up strava token on startup
-      await sc.getCurrentToken();
-      dispatch({ type: "ADD_SESSION", payload: record });
-      const segments = await pb
-        .collection("segments")
-        .getFullList({ sort: "-created" });
+      try {
+        console.log("...adding session...");
+        const sc = new Strava();
+        // freshen up strava token on startup
+        await sc.getCurrentToken();
+        dispatch({ type: "ADD_SESSION", payload: record });
+        const segments = await pb
+          .collection("segments")
+          .getFullList({ sort: "-created" });
 
-      dispatch({
-        type: "ADD_SEGMENTS",
-        payload: segments,
-      });
+        console.log(segments);
+        dispatch({
+          type: "ADD_SEGMENTS",
+          payload: segments,
+        });
+      } catch (err) {
+        console.log("something went wrong while adding session: ");
+        console.log(err);
+      }
     }
   }, true);
   return destroy;
