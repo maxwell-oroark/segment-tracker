@@ -9,7 +9,7 @@ const SPATIAL_RESOLUTION = 5;
 
 class Segment {
   constructor(segment, userId) {
-    this.segment_id = segment.segment_id;
+    this.segment_id = segment.id;
     this.user_id = userId;
     this.name = segment.name;
     this.bearing = segment.bearing;

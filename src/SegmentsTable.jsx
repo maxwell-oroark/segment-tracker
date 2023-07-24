@@ -5,8 +5,6 @@ export default function SegmentsTable({
   activeSegment,
   setActiveSegment,
 }) {
-  console.log("segments: ");
-  console.log(segments);
   return (
     <Table
       size="small"

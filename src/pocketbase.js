@@ -5,30 +5,19 @@ import Segment from "./models/Segment";
 export const pb = new PocketBase("https://segment-tracker.dev");
 
 export const reviveSession = (dispatch) => {
-  const destroy = pb.authStore.onChange(async (_token, record) => {
-    if (record) {
-      try {
-        console.log("...adding session...");
-        const sc = new Strava();
-        // freshen up strava token on startup
-        await sc.getCurrentToken();
-        dispatch({ type: "ADD_SESSION", payload: record });
-        const segments = await pb
-          .collection("segments")
-          .getFullList({ sort: "-created" });
-
-        console.log(segments);
-        dispatch({
-          type: "ADD_SEGMENTS",
-          payload: segments,
+  try {
+    if (pb.authStore.isValid) {
+      pb.collection("users")
+        .authRefresh()
+        .then(({ record }) => {
+          dispatch({ type: "ADD_SESSION", payload: record });
         });
-      } catch (err) {
-        console.log("something went wrong while adding session: ");
-        console.log(err);
-      }
+    } else {
+      pb.authStore.clear(); // after this call pb.authStore.isValid will be false
     }
-  }, true);
-  return destroy;
+  } catch (e) {
+    pb.authStore.clear(); // after this call pb.authStore.isValid will be false
+  }
 };
 
 export async function signIn(dispatch) {
@@ -61,7 +50,7 @@ export async function syncSegments(newSegments, userId) {
   if (newSegments.length > 0) {
     const promises = newSegments.map((segment) => {
       const model = new Segment(segment, userId);
-      console.log("segment: ");
+      console.log("serialized segment: ");
       console.log(model.serialize());
       return pb
         .collection("segments")

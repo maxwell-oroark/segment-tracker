@@ -70,8 +70,13 @@ export default function Sidebar() {
                   console.log("syncing segments");
                   const sc = new Strava();
                   console.time("segments/sync");
-                  const userSegmentIds = await fetchSegments();
+                  const userSegmentIds = await fetchSegments().then(
+                    (segments) => segments.map((s) => s.segment_id)
+                  );
                   const stravaSegmentIds = await sc.fetchSegmentIds();
+
+                  console.log({ stravaSegmentIds });
+                  console.log({ userSegmentIds });
                   const newStravaSegmentIds = stravaSegmentIds.filter(
                     (o) => userSegmentIds.indexOf(o) === -1
                   );
@@ -94,6 +99,7 @@ export default function Sidebar() {
                     payload: refreshedSegments,
                   });
                 } catch (err) {
+                  console.log(err);
                   dispatch({
                     type: "UPDATE_SYNC_SEGMENTS",
                     payload: { status: "failed" },

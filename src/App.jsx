@@ -10,7 +10,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import LazyLoad from "./LazyLoad";
 
 function App() {
-  const { segments, active } = useStore();
+  const { active } = useStore();
   return (
     <Layout style={{ height: "100vh", display: "flex", flexDirection: "row" }}>
       <Layout.Content style={{ display: "flex", flexDirection: "column" }}>

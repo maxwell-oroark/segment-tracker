@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext, useEffect } from "react";
-import { reviveSession } from "../pocketbase";
+import { fetchSegments, reviveSession } from "../pocketbase";
 
 export const StoreContext = createContext(null);
 export const StoreDispatchContext = createContext(null);
@@ -76,8 +76,12 @@ export function StoreContextProvider({ children }) {
   }, initialState);
 
   useEffect(() => {
-    const destroy = reviveSession(dispatch);
-    return () => destroy();
+    const fetchAccountResources = async () => {
+      reviveSession(dispatch);
+      const segments = await fetchSegments();
+      dispatch({ type: "ADD_SEGMENTS", payload: segments });
+    };
+    fetchAccountResources();
   }, []);
   return (
     <StoreContext.Provider value={store}>
