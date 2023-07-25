@@ -42,6 +42,7 @@ const Profile = ({ session }) => {
     return (
       <Button
         type="primary"
+        className="bg-blue-500"
         style={{ width: 64, height: 64 }}
         onClick={() => signIn(dispatch)}
       >
